@@ -1,0 +1,50 @@
+body {
+    margin-left: 5%;
+    margin-right: 5%;
+    color: #0D0A0B;
+}
+
+#landing-header {
+    display: grid;
+    grid-template-columns: 70% 30%;
+    background-color: #5AB4E6;
+}
+
+#landing-nav {
+    text-align: center;
+    padding-top: 30px;
+}
+
+a {
+    color: black;
+}
+
+#landing-main {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+#features {
+
+}
+
+figure {
+    text-align: center;
+}
+
+img {
+    border: 2px solid darkblue;
+}
+
+#product-pages {
+    display: grid;
+    grid-template-rows: 25% 25% 25% 25%;
+    justify-content: center;
+}
+
+
+.big-button {
+    border: 3px solid rgb(38, 125, 255);
+    width: 150px;
+    height: 50px;
+}
