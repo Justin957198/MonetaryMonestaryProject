@@ -45,6 +45,7 @@ img {
 
 .big-button {
     border: 3px solid rgb(38, 125, 255);
+    text-align: center;
     width: 150px;
     height: 50px;
 }
