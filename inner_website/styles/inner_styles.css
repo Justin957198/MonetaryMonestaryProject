@@ -1,0 +1,61 @@
+#home-header {
+    display: grid;
+    grid-template-columns: 70% 30%;
+    background-color: #5AB4E6;
+}
+
+#home-nav {
+    text-align: center;
+    padding-top: 30px;
+}
+
+a {
+    color: black;
+    font-weight: bold;
+}
+
+
+#four-square {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    
+    
+    gap: 15px;
+    margin-left: 10%;
+    margin-right: 10%;
+    border: 2px solid, blue;
+    padding: 10px;
+}
+
+.block-title {
+
+}
+
+#account {
+    border: 2px solid blue;
+    background-color: rgb(168, 235, 212);
+    padding: 5px;
+}
+
+#accounts {
+    border: 2px solid blue;
+    background-color: rgb(168, 235, 212);
+    padding: 5px;
+}
+
+#standing {
+    border: 2px solid blue;
+    background-color: rgb(168, 235, 212);
+    padding: 5px;
+}
+
+#functions {
+    border: 2px solid blue;
+    background-color: rgb(168, 235, 212);
+    padding: 5px;
+}
+
+#home-footer {
+    text-align: right;
+}
