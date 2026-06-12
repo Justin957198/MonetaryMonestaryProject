@@ -49,3 +49,21 @@ img {
     width: 150px;
     height: 50px;
 }
+
+#login-page {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+#login-box {
+    text-align: center;
+    padding: 15%;
+    border: 5px solid rgb(50, 132, 255);
+}
+
+#login-footer {
+    text-align: center;
+}
