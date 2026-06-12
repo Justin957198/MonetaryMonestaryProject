@@ -7,24 +7,25 @@ async function authenticate() {
         password: password
     };
 
-    const payload = new URLSearchParams(loginRequest).toString();
+    
 
     try {
         const response = await fetch(endpoint, {
             method: "POST",
             headers: {
-                    "Content-type": "application/x-www-form-urlencoded"
+                    "Content-type": "application/json"
                 },
-                body: payload
+                body: JSON.stringify(loginRequest)
             });
         if(!response.ok) {
             console.log("ERROR")
         }
 
         const data = await response.json();
-        localStorage.setItem("accessToken", data.tokenA);
-        localStorage.setItem("refresh", data.tokenB);
-        console.log(data);
+        console.log(data.accessToken)
+        localStorage.setItem("accessToken", data.token);
+//
+        window.location.href = "http://127.0.0.1:5500/inner_website/home.html";
     } catch(ex) {
         console.log("FETCH FAILED")
     }
