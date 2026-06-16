@@ -1,4 +1,8 @@
 window.addEventListener("DOMContentLoaded", loadUser);
+const infoButton = document.getElementById('info-button');
+const infoListElement = document.getElementById('info-list');
+let infoLoaded = false;
+let frontUser = null;
 
 async function loadUser() {
     try {
@@ -14,11 +18,28 @@ async function loadUser() {
             throw new Error("Not Authenticated");
         }
 
-        const frontUser = await user.json();
+        frontUser = await user.json();
         console.log(frontUser)
         document.getElementById("user-welcome")
         .textContent = `Welcome ${frontUser.username} AKA ${frontUser.userDetails[0]}`;
     } catch(ex) {
-        console.log("FETCH ERROR");
+        console.log(ex);
     }
 }
+
+function loadInfo() {
+    if(!infoLoaded) {
+    infoListElement.innerHTML += `<li>Name: ${frontUser.userDetails[0]}</li>
+                        <li>Phone: ${frontUser.userDetails[1]}</li>
+                        <li>Gender: ${frontUser.userDetails[2]}</li>
+                        <li>Address: ${frontUser.userDetails[3]}</li>
+                        <li>Birthday: ${frontUser.userDetails[5]}</li> `;
+                        infoLoaded = true;
+    } else {
+        infoListElement.replaceChildren();
+        infoLoaded = false;
+    }
+
+}
+
+infoButton.addEventListener("click", loadInfo)
