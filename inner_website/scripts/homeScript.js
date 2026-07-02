@@ -1,6 +1,7 @@
 window.addEventListener("DOMContentLoaded", loadUser);
 const infoButton = document.getElementById('info-button');
 const infoListElement = document.getElementById('info-list');
+const logoutButton = document.getElementById('logout');
 let infoLoaded = false;
 let frontUser = null;
 
@@ -14,8 +15,10 @@ async function loadUser() {
                 "Authorization": `Bearer ${token}`
             }
         });
-        if(!user.ok) {
-            throw new Error("Not Authenticated");
+        if(!user.ok || user.statusText === "Unauthorized") {
+            //throw new Error("Not Authenticated");
+            refresh();
+            return;
         }
 
         frontUser = await user.json();
@@ -25,6 +28,28 @@ async function loadUser() {
     } catch(ex) {
         console.log(ex);
     }
+}
+
+async function refresh() {
+    const newToken = await fetch("http://localhost:8080/authenticate/refresh", {
+        method: "POST",
+        credentials: "include"
+    });
+
+    if(!newToken.ok) {
+        localStorage.removeItem("accessToken");
+        window.location.href = "http://localhost:5500/index.html";
+    }
+
+    const tokenData = await newToken.json();
+    console.log(tokenData);
+
+    localStorage.setItem(
+        "accessToken",
+        tokenData.token
+    );
+
+    await loadUser();
 }
 
 function loadInfo() {
@@ -40,6 +65,10 @@ function loadInfo() {
         infoLoaded = false;
     }
 
+}
+
+function logout() {
+    
 }
 
 infoButton.addEventListener("click", loadInfo)

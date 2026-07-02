@@ -12,6 +12,7 @@ async function authenticate() {
     try {
         const response = await fetch(endpoint, {
             method: "POST",
+            credentials: "include",
             headers: {
                     "Content-type": "application/json"
                 },
@@ -22,11 +23,11 @@ async function authenticate() {
         }
 
         const data = await response.json();
-        console.log(data.accessToken)
+        console.log(data)
         localStorage.setItem("accessToken", data.token);
-//
-        window.location.href = "http://127.0.0.1:5500/inner_website/home.html";
+
+        window.location.href = "http://localhost:5500/inner_website/home.html";
     } catch(ex) {
-        console.log("FETCH FAILED")
+        console.log("FETCH FAILED" + ex)
     }
 }
