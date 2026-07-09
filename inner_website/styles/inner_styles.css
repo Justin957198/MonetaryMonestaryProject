@@ -14,6 +14,9 @@ a {
     font-weight: bold;
 }
 
+#ErrorOrComfirmation {
+    text-align: center;
+}
 
 #four-square {
     display: grid;
@@ -29,6 +32,10 @@ a {
 }
 
 .block-title {
+    
+}
+
+#user-title {
     text-align: center;
 }
 

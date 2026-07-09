@@ -11,7 +11,7 @@
     <header id="home-header">
         <h1>Home</h1>
         <nav id="home-nav">
-            <a>Home</a> |
+            <a href="home.html">Home</a> |
             <a>Account</a> |
             <a>Products</a> |
             <button id="logout">Logout</button>
@@ -19,6 +19,9 @@
     </header>
     <hr>
     <main>
+        <section>
+            <p id="ErrorOrComfirmation"></p>
+        </section>
         <section id="four-square">
             <section id="account">
                 <div class="block-title">
@@ -29,7 +32,10 @@
             </section>
             <section id="accounts">
                 <div class="block-title">
+                    <button id="open-account">Open Account</button>
+                    <div id="account-form"></div>
                     <h2>Current Accounts</h2>
+                    <div id="accounts-list"></div>
                 </div>
             </section>
             <section id="standing">
@@ -40,7 +46,6 @@
             <section id="functions">
                 <div class="block-title">
                     <h2>Actions</h2>
-                    <button>Open checkings / Savings</button>
                     <button>Deposit</button>
                     <button>Withdraw</button>
                     <button>Transfer</button>

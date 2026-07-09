@@ -27,7 +27,8 @@ async function loadUser() {
         .textContent = `Name: ${frontUser.userDetails[0]} -- Email: ${frontUser.email}`
         document.getElementById("phone")
         .textContent = `Phone: ${frontUser.userDetails[1]}`
-        document.getElementById("user-title")
+        document.getElementById("address")
+        .textContent = `Current Adress: ${frontUser.userDetails[3]}`
     } catch(ex) {
         console.log(ex);
     }
