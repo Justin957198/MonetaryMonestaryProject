@@ -26,9 +26,25 @@ async function loadUser() {
         console.log(frontUser)
         document.getElementById("user-welcome")
         .textContent = `Welcome ${frontUser.username}`;
-        if(!frontUser.userAccounts === undefined) {
-            document.getElementById('accounts-list')
-            .textContent = `${frontUser.userAccounts}`
+        if(frontUser.usersAccounts !== undefined) {
+            Object.entries(frontUser.usersAccounts).forEach(([accountNumber, account]) => {
+                let statusClass = "";
+                if(account.status === "Unlocked") {
+                statusClass = "status-unlocked"
+            } else {
+                statusClass = "status-locked"
+            }
+                document.getElementById('accounts-list')
+            .innerHTML += `
+            <div class="account-block">
+            <hr>
+            <h3>${account.accountType}</h3>
+            <p>Account Number: ${accountNumber} | Routing: ${account.routingNumber}</p>
+            <p>Avaliable Balance: ${account.currency}</p>
+            <div class="status-squares"><span class="module ${statusClass}"></span><span class="module"></span><span class="module"></span></div>
+            <hr>
+            </div>`
+            });
         } else {
             document.getElementById('accounts-list')
             .textContent = `No accounts exist, please open an account above.`
