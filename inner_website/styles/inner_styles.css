@@ -51,6 +51,32 @@ a {
     padding: 5px;
 }
 
+.account-block {
+    border: 1px solid black;
+}
+
+.status-squares {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.status-unlocked {
+    background-color: #00CF00;
+}
+
+.status-locked {
+    background-color: #cf0000;
+}
+
+.module {
+    border: 1px solid black;
+    height: 5px;
+    width: 10px;
+    margin-left: 10px;
+    padding-left: 10px;
+}
+
 #standing {
     border: 2px solid blue;
     background-color: rgb(168, 235, 212);
