@@ -49,6 +49,20 @@ async function loadUser() {
             document.getElementById('accounts-list')
             .textContent = `No accounts exist, please open an account above.`
         }
+        document.getElementById('standing-information').innerHTML = `
+        <p>Customer trust rating ${frontUser.userStatus.customerRating}</p>
+        <p>Total Debt: ${frontUser.userStatus.debt}</p>`
+        if(frontUser.userStatus.failedBills === null) {
+            document.getElementById('standing-information').innerHTML += `
+            <p>No bills failed yay</p>`
+        } else {
+            Objects.entries(frontUser.userStatus.failedBills).forEach(([billName, bill]) => {
+                document.getElementById('standing-information').innerHTML += `
+                <h4>Failed Bills</h4>
+                <p>Bill Name: ${billName}</p>
+                <p>Bill Info: ${bill}</p>`
+            })
+        }
         
     } catch(ex) {
         console.log(ex);
@@ -138,7 +152,7 @@ async function submitAccount() {
 
         const result = await response.json();
         document.getElementById('ErrorOrComfirmation')
-        .textContent = result.text();
+        .textContent = result.message;
     } catch(ex) {
         console.log(ex.message);
     }
