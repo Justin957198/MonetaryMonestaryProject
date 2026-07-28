@@ -1,13 +1,20 @@
 body {
-    margin-left: 5%;
-    margin-right: 5%;
     color: #0D0A0B;
+    margin: 0;
+    padding: 0;
 }
 
 #landing-header {
     display: grid;
     grid-template-columns: 70% 30%;
-    background-color: #5AB4E6;
+    background-color: #80CED7;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+
+#web-title {
+    padding-left: 15px;
 }
 
 #landing-nav {
@@ -17,19 +24,22 @@ body {
 
 a {
     color: black;
+    text-decoration: none;
 }
 
 #landing-main {
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 80% 20%;
+    margin-left: 15px;
+    margin-right: 15px;
 }
 
 #features {
-
+    margin-left: 5%;
 }
 
 figure {
-    text-align: center;
+    text-align: left;
 }
 
 img {
@@ -40,14 +50,30 @@ img {
     display: grid;
     grid-template-rows: 25% 25% 25% 25%;
     justify-content: center;
+    margin-right: 5%;
 }
 
 
 .big-button {
     border: 3px solid rgb(38, 125, 255);
+    background-color: #568259;
+    color: white;
     text-align: center;
     width: 150px;
     height: 50px;
+}
+
+.big-button:hover {
+    background-color: #8eda93;
+    color: rgb(0, 0, 0);
+}
+
+#landing-footer {
+    color: white;
+    background-color: #002344;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    bottom: 0;
 }
 
 #login-page {

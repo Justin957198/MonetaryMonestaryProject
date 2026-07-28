@@ -3,6 +3,8 @@ const infoButton = document.getElementById('info-button');
 const infoListElement = document.getElementById('info-list');
 const logoutButton = document.getElementById('logout');
 const openAccountBtn = document.getElementById('open-account');
+const hideAccountCreator = document.getElementById('hide-account-menu');
+const depoBtn = document.getElementById('deposit')
 let infoLoaded = false;
 let frontUser = null;
 
@@ -106,6 +108,11 @@ async function openAccountForm() {
     <button onclick="submitAccount()">Open</button>`
 }
 
+async function hideAccountForm() {
+    document.getElementById('account-form')
+    .innerHTML = ``;
+}
+
 async function submitAccount() {
     const accountType = document.querySelector('input[name="account_type"]:checked')?.value;
     const Minimum = Number(document.getElementById('minimum').value);
@@ -158,6 +165,19 @@ async function submitAccount() {
     }
 }
 
+async function openDepositForm() {
+    document.getElementById('transaction-form').innerHTML = `
+    <label>Enter account number:</label>
+    <input type="text"><br>
+    <label>Enter cash injection:</label>
+    <input type="number"><br>
+    <button onClick="deposit()">Submit</button>` 
+}
+
+async function deposit() {
+    
+}
+
 function loadInfo() {
     window.location.href = "http://localhost:5500/inner_website/user.html"
 }
@@ -167,4 +187,6 @@ function logout() {
 }
 
 openAccountBtn.addEventListener("click", openAccountForm);
+hideAccountCreator.addEventListener("click", hideAccountForm)
 infoButton.addEventListener("click", loadInfo);
+depoBtn.addEventListener("click", openDepositForm);

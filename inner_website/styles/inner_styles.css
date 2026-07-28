@@ -21,7 +21,7 @@ a {
 #home-view {
     display: grid;
     grid-template-columns: 60% 40%;
-    margin-right: 10%;
+    margin-right: 5%;
 }
 
 #four-square {
@@ -31,7 +31,7 @@ a {
     
     
     gap: 15px;
-    margin-left: 10%;
+    margin-left: 5%;
     border: 2px solid, blue;
     padding: 10px;
 }
@@ -50,7 +50,7 @@ a {
     border: 2px solid blue;
     background-color: rgb(168, 235, 212);
     padding: 5px;
-    height: 200px;
+    height: 100px;
 }
 
 .account-block {
@@ -95,17 +95,24 @@ a {
     border: 2px solid blue;
     background-color: rgb(168, 235, 212);
     padding: 5px;
-    height: 200px;
+    height: 175px;
+    overflow-y: auto;
 }
 
 #accounts {
-    grid-column: 2;
-    grid-row: 1 / 4;
     border: 2px solid blue;
     background-color: rgb(168, 235, 212);
     padding: 5px;
+    height: 600px;
     overflow-y: auto;
     
+}
+
+#transaction-section {
+    border: 2px solid blue;
+    margin-left: 10%;
+    margin-right: 10%;
+    height: 10%;
 }
 
 #home-footer {
