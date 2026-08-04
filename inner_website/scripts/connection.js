@@ -2,6 +2,9 @@ async function authenticate() {
     const endpoint = 'http://localhost:8080/authenticate/login/user';
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    if(username === "" || password === "") {
+        document.getElementById('error-field').innerText = "Please fill out all fields"
+    }
     const loginRequest = {
         username: username,
         password: password
