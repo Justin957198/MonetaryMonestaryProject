@@ -5,6 +5,7 @@ const logoutButton = document.getElementById('logout');
 const openAccountBtn = document.getElementById('open-account');
 const hideAccountCreator = document.getElementById('hide-account-menu');
 const depoBtn = document.getElementById('deposit')
+const accNumList = [];
 let infoLoaded = false;
 let frontUser = null;
 
@@ -14,7 +15,7 @@ async function loadUser() {
         const user = await fetch("http://localhost:8080/authenticate/you", {
             method: "GET",
             headers: {
-                "Content-Type": "application/json",
+                //"Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             }
         });
@@ -31,14 +32,14 @@ async function loadUser() {
         if(frontUser.usersAccounts !== undefined) {
             Object.entries(frontUser.usersAccounts).forEach(([accountNumber, account]) => {
                 let statusClass = "";
-                if(account.status === "Unlocked") {
+            if(account.status === "Unlocked") {
                 statusClass = "status-unlocked"
             } else {
                 statusClass = "status-locked"
             }
                 document.getElementById('accounts-list')
             .innerHTML += `
-            <div class="account-block">
+            <div id="${accountNumber}" class="account-block">
             <hr>
             <h3>${account.accountType}</h3>
             <p>Account Number: ${accountNumber} | Routing: ${account.routingNumber}</p>
@@ -46,6 +47,7 @@ async function loadUser() {
             <div class="status-squares"><span class="module ${statusClass}"></span><span class="module"></span><span class="module"></span></div>
             <hr>
             </div>`
+            accNumList.push(accountNumber);
             });
         } else {
             document.getElementById('accounts-list')
@@ -167,14 +169,78 @@ async function submitAccount() {
 
 async function openDepositForm() {
     document.getElementById('transaction-form').innerHTML = `
+    <label id="action-type">Deposit</label><br>
     <label>Enter account number:</label>
-    <input type="text"><br>
+    <select id="account-select"></select><br>
     <label>Enter cash injection:</label>
-    <input type="number"><br>
-    <button onClick="deposit()">Submit</button>` 
+    <input id="injection" type="number"><br>
+    <button onClick="manipCurrency()">Submit</button>` 
+    for(let i = 0; i < accNumList.length; i++) {
+        document.getElementById('account-select').innerHTML += `
+        <option>${accNumList[i]}</option>`
+    }
 }
 
-async function deposit() {
+async function manipCurrency() {
+    const action = document.getElementById('action-type').textContent;
+    const accNumber = [document.getElementById('account-select').value];
+    const money = document.getElementById('injection').valueAsNumber;
+
+    manipPayload = {
+        action,
+        accNumber,
+        money
+    }
+
+    try {
+        const data = await fetch("http://localhost:8080/web/bank/account/manipFunds", {
+            method: "PUT",
+            headers: {
+                "content-type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+            },
+            body: JSON.stringify(manipPayload)
+        });
+
+        if(data.ok) {
+            const response = await data.json()
+            console.log(response);
+            document.getElementById('transaction-form').innerHTML += `
+            <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} with ${response.amount} at time ${response.timePreformed}</p>`
+            
+            const account = await fetch(`http://localhost:8080/web/bank/account/getAccount=${response.accounts[0]}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+                }
+            });
+
+            if(!account.ok) {
+                console.log("ERROR");
+            }
+
+            const acc = await account.json();
+            let statusClass = "";
+            if(acc.status === "Unlocked") {
+                statusClass = "status-unlocked";
+            } else {
+                statusClass = "status-locked";
+            }
+            document.getElementById(`${acc.accountNumber}`).innerHTML = `
+            <hr>
+            <h3>${acc.accountType}</h3>
+            <p>Account Number: ${acc.accountNumber} | Routing: ${acc.routingNumber}</p>
+            <p>Avaliable Balance: ${acc.currency}</p>
+            <div class="status-squares"><span class="module ${statusClass}"></span><span class="module"></span><span class="module"></span></div>
+            <hr>`
+        } else if(data.status === 401) {
+            await refresh()
+        } else {
+            //console.log(data);
+        }
+    } catch(ex) {
+        console.log(ex);
+    }
     
 }
 

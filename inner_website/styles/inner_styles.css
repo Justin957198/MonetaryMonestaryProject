@@ -1,7 +1,13 @@
+body {
+    background-color: #0044c4;
+}
+
 #home-header {
     display: grid;
     grid-template-columns: 70% 30%;
-    background-color: #80CED7;
+    color: #ffffff;
+    padding-left: 5%;
+    padding-right: 5%;
 }
 
 #home-nav {
@@ -10,7 +16,12 @@
 }
 
 a {
-    color: black;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+p {
     font-weight: bold;
 }
 
@@ -32,12 +43,16 @@ a {
     
     gap: 15px;
     margin-left: 5%;
-    border: 2px solid, blue;
+    border: 2px solid, rgb(255, 251, 0);
     padding: 10px;
 }
 
 .block-title {
     
+}
+
+#action-type {
+    font-size: large;
 }
 
 #user-title {
@@ -47,8 +62,8 @@ a {
 #account {
     grid-column: 1;
     grid-row: 1;
-    border: 2px solid blue;
-    background-color: rgb(168, 235, 212);
+    border: 2px solid rgb(255, 251, 0);;
+    background-color: rgb(86, 159, 255);
     padding: 5px;
     height: 100px;
 }
@@ -83,8 +98,8 @@ a {
 #standing {
     grid-column: 1;
     grid-row: 2;
-    border: 2px solid blue;
-    background-color: rgb(168, 235, 212);
+    border: 2px solid rgb(255, 251, 0);;
+    background-color: rgb(86, 159, 255);
     padding: 5px;
     height: 200px;
 }
@@ -92,16 +107,16 @@ a {
 #functions {
     grid-column: 1;
     grid-row: 3;
-    border: 2px solid blue;
-    background-color: rgb(168, 235, 212);
+    border: 2px solid rgb(255, 251, 0);;
+    background-color: rgb(86, 159, 255);
     padding: 5px;
     height: 175px;
     overflow-y: auto;
 }
 
 #accounts {
-    border: 2px solid blue;
-    background-color: rgb(168, 235, 212);
+    border: 2px solid rgb(255, 251, 0);;
+    background-color: rgb(86, 159, 255);
     padding: 5px;
     height: 600px;
     overflow-y: auto;
@@ -109,7 +124,7 @@ a {
 }
 
 #transaction-section {
-    border: 2px solid blue;
+    border: 2px solid rgb(255, 251, 0);;
     margin-left: 10%;
     margin-right: 10%;
     height: 10%;

@@ -21,8 +21,11 @@ async function authenticate() {
                 },
                 body: JSON.stringify(loginRequest)
             });
-        if(!response.ok) {
+        if(response.status === 401) {
             console.log("ERROR")
+            document.getElementById('error-field').innerText = "Credentials incorrect";
+        } else if(response.status === 503) {
+            document.getElementById('error-field').innerText = "Server Unavaliable";
         }
 
         const data = await response.json();
