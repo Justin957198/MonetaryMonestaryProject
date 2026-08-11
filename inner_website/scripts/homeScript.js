@@ -5,6 +5,7 @@ const logoutButton = document.getElementById('logout');
 const openAccountBtn = document.getElementById('open-account');
 const hideAccountCreator = document.getElementById('hide-account-menu');
 const depoBtn = document.getElementById('deposit')
+const withBtn = document.getElementById('withdraw')
 const accNumList = [];
 let infoLoaded = false;
 let frontUser = null;
@@ -32,10 +33,17 @@ async function loadUser() {
         if(frontUser.usersAccounts !== undefined) {
             Object.entries(frontUser.usersAccounts).forEach(([accountNumber, account]) => {
                 let statusClass = "";
+                let minimumClass = "";
             if(account.status === "Unlocked") {
                 statusClass = "status-unlocked"
             } else {
                 statusClass = "status-locked"
+            }
+
+            if(account.minimum > account.currency) {
+                minimumClass = "under-minimum"
+            } else {
+                minimumClass = "over-minimum"
             }
                 document.getElementById('accounts-list')
             .innerHTML += `
@@ -44,7 +52,7 @@ async function loadUser() {
             <h3>${account.accountType}</h3>
             <p>Account Number: ${accountNumber} | Routing: ${account.routingNumber}</p>
             <p>Avaliable Balance: ${account.currency}</p>
-            <div class="status-squares"><span class="module ${statusClass}"></span><span class="module"></span><span class="module"></span></div>
+            <div class="status-squares"><span class="module ${statusClass}"></span><span class="module ${minimumClass}"></span><span class="module"></span></div>
             <hr>
             </div>`
             accNumList.push(accountNumber);
@@ -181,6 +189,20 @@ async function openDepositForm() {
     }
 }
 
+async function openWithdrawForm() {
+    document.getElementById('transaction-form').innerHTML = `
+    <label id="action-type">Withdraw</label><br>
+    <label>Enter account number:</label>
+    <select id="account-select"></select><br>
+    <label>Enter cash request:</label>
+    <input id="injection" type="number"><br>
+    <button onClick="manipCurrency()">Submit</button>` 
+    for(let i = 0; i < accNumList.length; i++) {
+        document.getElementById('account-select').innerHTML += `
+        <option>${accNumList[i]}</option>`
+    }
+}
+
 async function manipCurrency() {
     const action = document.getElementById('action-type').textContent;
     const accNumber = [document.getElementById('account-select').value];
@@ -205,7 +227,7 @@ async function manipCurrency() {
         if(data.ok) {
             const response = await data.json()
             console.log(response);
-            document.getElementById('transaction-form').innerHTML += `
+            document.getElementById('transaction-form').innerHTML = `
             <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} with ${response.amount} at time ${response.timePreformed}</p>`
             
             const account = await fetch(`http://localhost:8080/web/bank/account/getAccount=${response.accounts[0]}`, {
@@ -221,17 +243,24 @@ async function manipCurrency() {
 
             const acc = await account.json();
             let statusClass = "";
+            let minimumClass = "";
             if(acc.status === "Unlocked") {
                 statusClass = "status-unlocked";
             } else {
                 statusClass = "status-locked";
+            }
+
+            if(acc.minimum > acc.currency) {
+                minimumClass = "under-minimum"
+            } else {
+                minimumClass = "over-minimum"
             }
             document.getElementById(`${acc.accountNumber}`).innerHTML = `
             <hr>
             <h3>${acc.accountType}</h3>
             <p>Account Number: ${acc.accountNumber} | Routing: ${acc.routingNumber}</p>
             <p>Avaliable Balance: ${acc.currency}</p>
-            <div class="status-squares"><span class="module ${statusClass}"></span><span class="module"></span><span class="module"></span></div>
+            <div class="status-squares"><span class="module ${statusClass}"></span><span class="module ${minimumClass}"></span><span class="module"></span></div>
             <hr>`
         } else if(data.status === 401) {
             await refresh()
@@ -256,3 +285,4 @@ openAccountBtn.addEventListener("click", openAccountForm);
 hideAccountCreator.addEventListener("click", hideAccountForm)
 infoButton.addEventListener("click", loadInfo);
 depoBtn.addEventListener("click", openDepositForm);
+withBtn.addEventListener("click", openWithdrawForm);

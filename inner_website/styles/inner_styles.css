@@ -83,7 +83,15 @@ p {
     background-color: #00CF00;
 }
 
+.over-minimum {
+    background-color: #00CF00;
+}
+
 .status-locked {
+    background-color: #cf0000;
+}
+
+.under-minimum {
     background-color: #cf0000;
 }
 
