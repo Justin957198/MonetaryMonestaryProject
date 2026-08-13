@@ -4,8 +4,9 @@ const infoListElement = document.getElementById('info-list');
 const logoutButton = document.getElementById('logout');
 const openAccountBtn = document.getElementById('open-account');
 const hideAccountCreator = document.getElementById('hide-account-menu');
-const depoBtn = document.getElementById('deposit')
-const withBtn = document.getElementById('withdraw')
+const depoBtn = document.getElementById('deposit');
+const withBtn = document.getElementById('withdraw');
+const transBtn = document.getElementById('transfer');
 const accNumList = [];
 let infoLoaded = false;
 let frontUser = null;
@@ -51,7 +52,7 @@ async function loadUser() {
             <hr>
             <h3>${account.accountType}</h3>
             <p>Account Number: ${accountNumber} | Routing: ${account.routingNumber}</p>
-            <p>Avaliable Balance: ${account.currency}</p>
+            <p id="current-funds">Avaliable Balance: ${account.currency}</p>
             <div class="status-squares"><span class="module ${statusClass}"></span><span class="module ${minimumClass}"></span><span class="module"></span></div>
             <hr>
             </div>`
@@ -203,10 +204,41 @@ async function openWithdrawForm() {
     }
 }
 
+async function openTransferForm() {
+    document.getElementById('transaction-form').innerHTML = `
+    <label id="action-type">Transfer</label><br>
+    <label>Enter origin account number:</label>
+    <select id="account-select"></select><br>
+    <label>Enter origin account number:</label>
+    <select id="account-select2"></select><br>
+    <label>Enter cash Transfer:</label>
+    <input id="injection" type="number"><br>
+    <button onClick="manipCurrency()">Submit</button>` 
+    for(let i = 0; i < accNumList.length; i++) {
+        document.getElementById('account-select').innerHTML += `
+        <option>${accNumList[i]}</option>`
+        document.getElementById('account-select2').innerHTML += `
+        <option>${accNumList[i]}</option>`
+    }
+}
+
 async function manipCurrency() {
     const action = document.getElementById('action-type').textContent;
     const accNumber = [document.getElementById('account-select').value];
     const money = document.getElementById('injection').valueAsNumber;
+
+    if(action === "Transfer") {
+        accNumber.push(document.getElementById('account-select2').value)
+        if(accNumber[0] === accNumber[1]) {
+            document.getElementById('action-error').innerText = `ERROR cannot transfer to self`;
+            return;
+        }
+    }
+
+    if(money === 0) {
+        document.getElementById('action-error').innerText = `ERROR a transfer requires at least 0.01`;
+        return;
+    }
 
     manipPayload = {
         action,
@@ -226,44 +258,52 @@ async function manipCurrency() {
 
         if(data.ok) {
             const response = await data.json()
-            console.log(response);
-            document.getElementById('transaction-form').innerHTML = `
-            <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} with ${response.amount} at time ${response.timePreformed}</p>`
-            
-            const account = await fetch(`http://localhost:8080/web/bank/account/getAccount=${response.accounts[0]}`, {
+            if(response.actionPreformed === "Transfer") {
+                document.getElementById('transaction-form').innerHTML = `
+            <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} to ${response.accounts[1]} with ${response.amount} at time ${response.timePreformed}</p>`
+            } else {
+                document.getElementById('transaction-form').innerHTML = `
+                <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} with ${response.amount} at time ${response.timePreformed}</p>`
+            }
+            response.accounts.forEach( async (updatedAccount) => {
+                const account = await fetch(`http://localhost:8080/web/bank/account/getAccount=${updatedAccount}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
                 }
-            });
+                });
 
-            if(!account.ok) {
-                console.log("ERROR");
-            }
+                if(!account.ok) {
+                    console.log("ERROR");
+                }
 
-            const acc = await account.json();
-            let statusClass = "";
-            let minimumClass = "";
-            if(acc.status === "Unlocked") {
-                statusClass = "status-unlocked";
-            } else {
-                statusClass = "status-locked";
-            }
+                const acc = await account.json();
+                let statusClass = "";
+                let minimumClass = "";
+                if(acc.status === "Unlocked") {
+                    statusClass = "status-unlocked";
+                } else {
+                    statusClass = "status-locked";
+                }
 
-            if(acc.minimum > acc.currency) {
-                minimumClass = "under-minimum"
-            } else {
-                minimumClass = "over-minimum"
-            }
-            document.getElementById(`${acc.accountNumber}`).innerHTML = `
-            <hr>
-            <h3>${acc.accountType}</h3>
-            <p>Account Number: ${acc.accountNumber} | Routing: ${acc.routingNumber}</p>
-            <p>Avaliable Balance: ${acc.currency}</p>
-            <div class="status-squares"><span class="module ${statusClass}"></span><span class="module ${minimumClass}"></span><span class="module"></span></div>
-            <hr>`
+                if(acc.minimum > acc.currency) {
+                    minimumClass = "under-minimum"
+                } else {
+                    minimumClass = "over-minimum"
+                }
+                document.getElementById(`${acc.accountNumber}`).innerHTML = `
+                <hr>
+                <h3>${acc.accountType}</h3>
+                <p>Account Number: ${acc.accountNumber} | Routing: ${acc.routingNumber}</p>
+                <p "current-funds">Avaliable Balance: ${acc.currency}</p>
+                <div class="status-squares"><span class="module ${statusClass}"></span><span class="module ${minimumClass}"></span><span class="module"></span></div>
+                <hr>`
+            })
+            
+            
         } else if(data.status === 401) {
             await refresh()
+            await manipCurrency()
         } else {
             //console.log(data);
         }
@@ -282,7 +322,8 @@ function logout() {
 }
 
 openAccountBtn.addEventListener("click", openAccountForm);
-hideAccountCreator.addEventListener("click", hideAccountForm)
+hideAccountCreator.addEventListener("click", hideAccountForm);
 infoButton.addEventListener("click", loadInfo);
 depoBtn.addEventListener("click", openDepositForm);
 withBtn.addEventListener("click", openWithdrawForm);
+transBtn.addEventListener("click", openTransferForm);
