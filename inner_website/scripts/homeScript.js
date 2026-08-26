@@ -8,6 +8,7 @@ const depoBtn = document.getElementById('deposit');
 const withBtn = document.getElementById('withdraw');
 const transBtn = document.getElementById('transfer');
 const accNumList = [];
+let trabsactionsLoaded = false;
 let infoLoaded = false;
 let frontUser = null;
 
@@ -182,7 +183,7 @@ async function openDepositForm() {
     <label>Enter account number:</label>
     <select id="account-select"></select><br>
     <label>Enter cash injection:</label>
-    <input id="injection" type="number"><br>
+    <input id="injection" type="number" value=0><br>
     <button onClick="manipCurrency()">Submit</button>` 
     for(let i = 0; i < accNumList.length; i++) {
         document.getElementById('account-select').innerHTML += `
@@ -196,7 +197,7 @@ async function openWithdrawForm() {
     <label>Enter account number:</label>
     <select id="account-select"></select><br>
     <label>Enter cash request:</label>
-    <input id="injection" type="number"><br>
+    <input id="injection" type="number" value=0><br>
     <button onClick="manipCurrency()">Submit</button>` 
     for(let i = 0; i < accNumList.length; i++) {
         document.getElementById('account-select').innerHTML += `
@@ -212,7 +213,7 @@ async function openTransferForm() {
     <label>Enter origin account number:</label>
     <select id="account-select2"></select><br>
     <label>Enter cash Transfer:</label>
-    <input id="injection" type="number"><br>
+    <input id="injection" type="number" value=0><br>
     <button onClick="manipCurrency()">Submit</button>` 
     for(let i = 0; i < accNumList.length; i++) {
         document.getElementById('account-select').innerHTML += `
@@ -230,13 +231,13 @@ async function manipCurrency() {
     if(action === "Transfer") {
         accNumber.push(document.getElementById('account-select2').value)
         if(accNumber[0] === accNumber[1]) {
-            document.getElementById('action-error').innerText = `ERROR cannot transfer to self`;
+            document.getElementById('transaction-form').innerText = `ERROR cannot transfer to self`;
             return;
         }
     }
 
-    if(money === 0) {
-        document.getElementById('action-error').innerText = `ERROR a transfer requires at least 0.01`;
+    if(money === 0 || money === null) {
+        document.getElementById('transaction-form').innerText = `ERROR a transfer requires at least 0.01`;
         return;
     }
 
@@ -313,12 +314,77 @@ async function manipCurrency() {
     
 }
 
+async function fetchTransactions() {
+    if(accNumList === null || accNumList.length === 0) {
+
+    } else {
+        let index = 0;
+        console.log(accNumList);
+        if(trabsactionsLoaded === true) {
+
+        } else {
+            document.getElementById('transaction-block').innerHTML = ``;
+            accNumList.forEach( async (getTransactions) => {
+                const response = await fetch(`http://localhost:8080/web/bank/transactions/account=${getTransactions}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+                    }
+                });
+
+                if(!response.ok) {
+                    console.log("ERROR");
+                }
+
+                if(response.status === 401) {
+                    await refresh()
+                    return fetchTransactions()
+                }
+
+                const transactionList = await response.json()
+                console.log(transactionList);
+                transactionList.forEach((transactions) => {
+                    document.getElementById('transaction-block').innerHTML += `
+                <div id="accTransBlock">
+                    <h3>Account used: ${transactions.originAccount} | Type: ${transactions.type} | Ammount: ${transactions.transactionAmount} | Date: ${transactionList.date}</h3>
+                </div>
+                `
+                })
+                index++;
+                
+            })
+            trabsactionsLoaded = true;
+        }
+    }
+}
+
 function loadInfo() {
     window.location.href = "http://localhost:5500/inner_website/user.html"
 }
 
-function logout() {
+async function logout() {
+    try {
+        const response = await fetch(`http://localhost:8080/authenticate/logout/user`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "content-type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+            },
+        })
 
+        if(!response.ok) {
+            console.log("ERROR")
+        }
+
+        //let badToken = await response.json()
+        //console.log(badToken);
+        localStorage.removeItem("accessToken");
+        //localStorage.setItem("accessToken", badToken.token);
+        window.location.href = "http://localhost:5500/index.html"
+    } catch(ex) {
+
+    }
 }
 
 openAccountBtn.addEventListener("click", openAccountForm);
@@ -327,3 +393,4 @@ infoButton.addEventListener("click", loadInfo);
 depoBtn.addEventListener("click", openDepositForm);
 withBtn.addEventListener("click", openWithdrawForm);
 transBtn.addEventListener("click", openTransferForm);
+logoutButton.addEventListener("click", logout);

@@ -62,10 +62,15 @@ p {
 #account {
     grid-column: 1;
     grid-row: 1;
-    border: 2px solid rgb(255, 251, 0);;
+    border: 2px solid rgb(255, 251, 0);
     background-color: rgb(86, 159, 255);
     padding: 5px;
     height: 100px;
+}
+
+#button-group {
+    display: flex;
+    justify-content: space-around;
 }
 
 .account-block {
@@ -106,7 +111,7 @@ p {
 #standing {
     grid-column: 1;
     grid-row: 2;
-    border: 2px solid rgb(255, 251, 0);;
+    border: 2px solid rgb(255, 251, 0);
     background-color: rgb(86, 159, 255);
     padding: 5px;
     height: 200px;
@@ -123,7 +128,7 @@ p {
 }
 
 #accounts {
-    border: 2px solid rgb(255, 251, 0);;
+    border: 2px solid rgb(255, 251, 0);
     background-color: rgb(86, 159, 255);
     padding: 5px;
     height: 600px;
@@ -132,10 +137,18 @@ p {
 }
 
 #transaction-section {
-    border: 2px solid rgb(255, 251, 0);;
+    border: 2px solid rgb(255, 251, 0);
+    background-color: rgb(86, 159, 255);
+    text-align: center;
+    overflow-y: auto;
     margin-left: 10%;
     margin-right: 10%;
     height: 10%;
+}
+
+#accTransBlock {
+    border: 2px solid black;
+    border-radius: 10px;
 }
 
 #home-footer {

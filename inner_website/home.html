@@ -43,7 +43,9 @@
                     <div class="block-title">
                         <p id="action-error"></p>
                         <h2>Actions</h2>
-                        <button id="deposit">Deposit</button><button id="withdraw">Withdraw</button><button id="transfer">Transfer</button>
+                        <div id="button-group">
+                            <button id="deposit">Deposit</button><button id="withdraw">Withdraw</button><button id="transfer">Transfer</button>
+                        </div>
                         <div id="transaction-form">
                             
                         </div>
@@ -61,6 +63,10 @@
             </section>
         </section>
         <section id="transaction-section">
+            <button id="transaction-fetch" onclick="fetchTransactions()">All Transactions</button><button>Account Transactions</button>
+            <div id="transaction-block">
+
+            </div>
 
         </section>
     </main>
