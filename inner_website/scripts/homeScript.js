@@ -32,7 +32,7 @@ async function loadUser() {
         console.log(frontUser)
         document.getElementById("user-welcome")
         .textContent = `Welcome ${frontUser.username}`;
-        if(frontUser.usersAccounts !== undefined) {
+        if(frontUser.usersAccounts && Object.keys(frontUser.usersAccounts).length > 0) {
             Object.entries(frontUser.usersAccounts).forEach(([accountNumber, account]) => {
                 let statusClass = "";
                 let minimumClass = "";

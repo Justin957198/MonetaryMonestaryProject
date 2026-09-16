@@ -3,9 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="front_styles/register_page.css">
+    <script defer src="inner_website/scripts/registerUser.js"></script>
+    <title>Create User</title>
 </head>
 <body>
-    
+    <header id="creation-header">
+        <h1>Create User Here</h1>
+        <nav>
+            <a href="index.html">Home</a> |
+            <a href="about.html">About</a>
+        </nav>
+    </header>
+    <hr>
+    <main id="creation-box">
+        <form id="creation-form">
+            <fieldset id="personal-info">
+                <legend>Personal Info</legend>
+                <label for="name-input">Enter first name:</label>
+                <input id="name-input" name="f-n-i" placeholder="e.g. John"><br>
+                <label for="middle-initial">Enter middle initial:</label>
+                <input id="middle-initial" name="m-n-i" size="1"><br>
+                <label for="last-name">Enter last name:</label>
+                <input id="last-name" name="l-n-i" placeholder="e.g. Smith"><br>
+                <label for="birthdat" name="b-i">Enter birthday:</label>
+                <input id="birthday" name="Cust_Birthday" type="date"><br>
+                <label for="gender">Enter gender: </label><br>
+                <label>Male:</label><input type="radio" name="gender-choice" value="Male" checked><label>Female:</label><input type="radio" name="gender-choice" value="Female"><label>Other:</label><input type="radio" name="gender-choice" value="TBS"><br>
+                <label for="phone-number">Enter phone number: </label><input id="phone-number" placeholder="format -> xxx-xxx-xxxx" name="Cust_Phone"><br>
+                <label for="address">Enter home address: </label><input id="address" name="Cust_Address" placeholder="format -> 1111 example ln"><br>
+                <label for="email">Enter email: </label><input id="email" type="email" name="Cust_Email" placeholder="e.g. example@example.domain" size="30"><br>
+                <label for="user-identification-token">Enter current ID or social security number: </label><input id="user-identification-token" name="Cust_Identification_Token" placeholder="xxx-xx-xxxx or ID">
+            </fieldset>
+            <fieldset id="user-pass">
+                <legend>User and Pass</legend>
+                <label for="username">Enter username: </label><input id="username" name="Cust_User" placeholder="e.g. jayjones2988"><br>
+                <label for="password">Enter password: </label><input id="password" name="Cust_Password" placeholder="e.g. passglass49"><br>
+                <label for="password-re_enter">Re-enter password: </label><input id="password_re_enter" name="pass_check" placeholder="e.g. passglass49"><br>
+            </fieldset>
+        </form>
+        <div id="controls">
+            <button id="submit-btn">Create Account</button><button id="reset-btn" type="reset">Reset Information</button><button id="check-btn" >Check Information</button><button id="submit-login-btn" type="submit">Create and Login</button>
+        </div>
+    </main>
+    <hr>
+    <footer id="creation-footer">
+        <p>Created by Justin Johnson</p>
+    </footer>
 </body>
 </html>
