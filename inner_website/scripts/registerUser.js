@@ -1,5 +1,6 @@
 const submitbtn = document.getElementById('submit-btn')
 const infoCheck = document.getElementById('check-btn')
+const resetbtn = document.getElementById('reset-btn')
 
 
 
@@ -33,6 +34,8 @@ async function createUser() {
 
     }
 
+    console.log(newUserPackage);
+
     if(password !== Cust_Password_Check) {
         console.log("Passwords dont match")
         return;
@@ -51,11 +54,18 @@ async function createUser() {
             console.log("ERROR IN CREATION")
         }
 
-        const textResponse = await response.json();
+        const textResponse = await response.text()
         console.log(textResponse);
+        window.location.href = "http://localhost:5500/index.html";
     } catch(ex) {
         console.log(ex);
     }
+
+}
+
+function clearForm() {
+
 }
 
 submitbtn.addEventListener("click", createUser);
+resetbtn.addEventListener("click", clearForm);

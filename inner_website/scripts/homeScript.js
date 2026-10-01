@@ -7,7 +7,7 @@ const hideAccountCreator = document.getElementById('hide-account-menu');
 const depoBtn = document.getElementById('deposit');
 const withBtn = document.getElementById('withdraw');
 const transBtn = document.getElementById('transfer');
-const accNumList = [];
+let accNumList = new Set();
 let trabsactionsLoaded = false;
 let infoLoaded = false;
 let frontUser = null;
@@ -29,10 +29,11 @@ async function loadUser() {
         }
 
         frontUser = await user.json();
-        console.log(frontUser)
+        //console.log(frontUser)
         document.getElementById("user-welcome")
         .textContent = `Welcome ${frontUser.username}`;
         if(frontUser.usersAccounts && Object.keys(frontUser.usersAccounts).length > 0) {
+            document.getElementById('accounts-list').innerHTML = ``
             Object.entries(frontUser.usersAccounts).forEach(([accountNumber, account]) => {
                 let statusClass = "";
                 let minimumClass = "";
@@ -57,7 +58,10 @@ async function loadUser() {
             <div class="status-squares"><span class="module ${statusClass}"></span><span class="module ${minimumClass}"></span><span class="module"></span></div>
             <hr>
             </div>`
-            accNumList.push(accountNumber);
+            if(accNumList.length > frontUser.usersAccounts.length) {
+                accNumList.add(accountNumber);
+            }
+            accNumList.add(accountNumber);
             });
         } else {
             document.getElementById('accounts-list')
@@ -172,6 +176,7 @@ async function submitAccount() {
         const result = await response.json();
         document.getElementById('ErrorOrComfirmation')
         .textContent = result.message;
+        await refresh()
     } catch(ex) {
         console.log(ex.message);
     }
@@ -184,7 +189,8 @@ async function openDepositForm() {
     <select id="account-select"></select><br>
     <label>Enter cash injection:</label>
     <input id="injection" type="number" value=0><br>
-    <button onClick="manipCurrency()">Submit</button>` 
+    <button onClick="manipCurrency()">Submit</button>
+    <button onclick="dispose(1)">Dispose</button>` 
     for(let i = 0; i < accNumList.length; i++) {
         document.getElementById('account-select').innerHTML += `
         <option>${accNumList[i]}</option>`
@@ -198,7 +204,8 @@ async function openWithdrawForm() {
     <select id="account-select"></select><br>
     <label>Enter cash request:</label>
     <input id="injection" type="number" value=0><br>
-    <button onClick="manipCurrency()">Submit</button>` 
+    <button onClick="manipCurrency()">Submit</button>
+    <button onclick="dispose(1)">Dispose</button>` 
     for(let i = 0; i < accNumList.length; i++) {
         document.getElementById('account-select').innerHTML += `
         <option>${accNumList[i]}</option>`
@@ -214,7 +221,8 @@ async function openTransferForm() {
     <select id="account-select2"></select><br>
     <label>Enter cash Transfer:</label>
     <input id="injection" type="number" value=0><br>
-    <button onClick="manipCurrency()">Submit</button>` 
+    <button onClick="manipCurrency()">Submit</button>
+    <button onclick="dispose(1)">Dispose</button>` 
     for(let i = 0; i < accNumList.length; i++) {
         document.getElementById('account-select').innerHTML += `
         <option>${accNumList[i]}</option>`
@@ -334,27 +342,54 @@ async function fetchTransactions() {
 
                 if(!response.ok) {
                     console.log("ERROR");
+                    accNumList = new Set()
+                    await refresh()
+//                    await fetchTransactions()
+                    return;
                 }
 
                 if(response.status === 401) {
-                    await refresh()
-                    return fetchTransactions()
+//                    accNumList = null;
+//                   await refresh()
+//                    return;
                 }
 
                 const transactionList = await response.json()
                 console.log(transactionList);
+                document.getElementById('transaction-block').innerHTML += `
+                    <hr>
+                    <h2>${transactionList[0].originAccount}</h2>
+                `
                 transactionList.forEach((transactions) => {
                     document.getElementById('transaction-block').innerHTML += `
-                <div id="accTransBlock">
-                    <h3>Account used: ${transactions.originAccount} | Type: ${transactions.type} | Ammount: ${transactions.transactionAmount} | Date: ${transactionList.date}</h3>
-                </div>
+                
+                    <h3>Type: ${transactions.type} | Ammount: ${transactions.transactionAmount} $ | Date: ${transactions.date}</h3>
+                
                 `
                 })
                 index++;
                 
             })
+            document.getElementById('transaction-section'). innerHTML += `
+            <button id="retract-transactions" onclick="dispose(5)">Dispose</button>`
             trabsactionsLoaded = true;
         }
+    }
+}
+
+async function oneAccountTransactions() {
+
+}
+
+function dispose(option) {
+    if(option === 1) {
+        document.getElementById('transaction-form').innerHTML = ``
+    } else if(option === 5) {
+        trabsactionsLoaded = false;
+        document.getElementById('transaction-section').innerHTML = `<button id="transaction-fetch" onclick="fetchTransactions()">All Transactions</button><button>Account Transactions</button>
+            <div id="transaction-block">
+
+            </div>`
     }
 }
 
