@@ -183,6 +183,7 @@ async function submitAccount() {
 }
 
 async function openDepositForm() {
+    const accNumArray = [...accNumList];
     document.getElementById('transaction-form').innerHTML = `
     <label id="action-type">Deposit</label><br>
     <label>Enter account number:</label>
@@ -191,13 +192,14 @@ async function openDepositForm() {
     <input id="injection" type="number" value=0><br>
     <button onClick="manipCurrency()">Submit</button>
     <button onclick="dispose(1)">Dispose</button>` 
-    for(let i = 0; i < accNumList.length; i++) {
+    for(let i = 0; i < accNumArray.length; i++) {
         document.getElementById('account-select').innerHTML += `
-        <option>${accNumList[i]}</option>`
+        <option>${accNumArray[i]}</option>`
     }
 }
 
 async function openWithdrawForm() {
+    const accNumArray = [...accNumList];
     document.getElementById('transaction-form').innerHTML = `
     <label id="action-type">Withdraw</label><br>
     <label>Enter account number:</label>
@@ -206,13 +208,14 @@ async function openWithdrawForm() {
     <input id="injection" type="number" value=0><br>
     <button onClick="manipCurrency()">Submit</button>
     <button onclick="dispose(1)">Dispose</button>` 
-    for(let i = 0; i < accNumList.length; i++) {
+    for(let i = 0; i < accNumArray.length; i++) {
         document.getElementById('account-select').innerHTML += `
-        <option>${accNumList[i]}</option>`
+        <option>${accNumArray[i]}</option>`
     }
 }
 
 async function openTransferForm() {
+    const accNumArray = [...accNumList];
     document.getElementById('transaction-form').innerHTML = `
     <label id="action-type">Transfer</label><br>
     <label>Enter origin account number:</label>
@@ -223,11 +226,11 @@ async function openTransferForm() {
     <input id="injection" type="number" value=0><br>
     <button onClick="manipCurrency()">Submit</button>
     <button onclick="dispose(1)">Dispose</button>` 
-    for(let i = 0; i < accNumList.length; i++) {
+    for(let i = 0; i < accNumArray.length; i++) {
         document.getElementById('account-select').innerHTML += `
-        <option>${accNumList[i]}</option>`
+        <option>${accNumArray[i]}</option>`
         document.getElementById('account-select2').innerHTML += `
-        <option>${accNumList[i]}</option>`
+        <option>${accNumArray[i]}</option>`
     }
 }
 
@@ -268,11 +271,13 @@ async function manipCurrency() {
         if(data.ok) {
             const response = await data.json()
             if(response.actionPreformed === "Transfer") {
+                const seporateTime = response.timePreformed.split("T");
                 document.getElementById('transaction-form').innerHTML = `
-            <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} to ${response.accounts[1]} with ${response.amount} at time ${response.timePreformed}</p>`
+            <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} to ${response.accounts[1]} with ${response.amount} at time ${seporateTime[0] + " " + seporateTime[1]}</p>`
             } else {
+                const seporateTime = response.timePreformed.split("T");
                 document.getElementById('transaction-form').innerHTML = `
-                <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} with ${response.amount} at time ${response.timePreformed}</p>`
+                <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} with ${response.amount} at time ${seporateTime[0] + " " + seporateTime[1]}</p>`
             }
             response.accounts.forEach( async (updatedAccount) => {
                 const account = await fetch(`http://localhost:8080/web/bank/account/getAccount=${updatedAccount}`, {
