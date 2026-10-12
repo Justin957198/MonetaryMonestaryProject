@@ -182,6 +182,10 @@ async function submitAccount() {
     }
 }
 
+async function closeAccount() {
+
+}
+
 async function openDepositForm() {
     const accNumArray = [...accNumList];
     document.getElementById('transaction-form').innerHTML = `
@@ -273,11 +277,11 @@ async function manipCurrency() {
             if(response.actionPreformed === "Transfer") {
                 const seporateTime = response.timePreformed.split("T");
                 document.getElementById('transaction-form').innerHTML = `
-            <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} to ${response.accounts[1]} with ${response.amount} at time ${seporateTime[0] + " " + seporateTime[1]}</p>`
+            <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} to ${response.accounts[1]} with ${response.amount} at time ${seporateTime[0] + " " + seporateTime[1].substring(0, 9)}</p>`
             } else {
                 const seporateTime = response.timePreformed.split("T");
                 document.getElementById('transaction-form').innerHTML = `
-                <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} with ${response.amount} at time ${seporateTime[0] + " " + seporateTime[1]}</p>`
+                <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} with ${response.amount} at time ${seporateTime[0] + " " + seporateTime[1].substring(0, 9)}</p>`
             }
             response.accounts.forEach( async (updatedAccount) => {
                 const account = await fetch(`http://localhost:8080/web/bank/account/getAccount=${updatedAccount}`, {
@@ -382,6 +386,12 @@ async function fetchTransactions() {
     }
 }
 
+async function accountChoice() {
+    document.getElementById('transaction-block').innerHTML = `
+    <label id="text">Select Account</label>
+    <option id=accounts>p</option>`
+}
+
 async function oneAccountTransactions() {
 
 }
@@ -423,7 +433,7 @@ async function logout() {
         //localStorage.setItem("accessToken", badToken.token);
         window.location.href = "http://localhost:5500/index.html"
     } catch(ex) {
-
+        console.log(ex)
     }
 }
 
