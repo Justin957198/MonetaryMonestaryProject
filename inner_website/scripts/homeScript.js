@@ -274,14 +274,27 @@ async function manipCurrency() {
 
         if(data.ok) {
             const response = await data.json()
-            if(response.actionPreformed === "Transfer") {
-                const seporateTime = response.timePreformed.split("T");
-                document.getElementById('transaction-form').innerHTML = `
-            <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} to ${response.accounts[1]} with ${response.amount} at time ${seporateTime[0] + " " + seporateTime[1].substring(0, 9)}</p>`
+            console.log(response)
+            if(response.actionPreformed.includes("Transfer")) {
+                if(response.actionPreformed.includes("Attempt")) {
+                    const seporateTime = response.timePreformed.split("T");
+                    document.getElementById('transaction-form').innerHTML = `
+                    <p>${response.actionPreformed} on account ${response.accounts[0]}, ${response.accounts[1]} for ${response.amount} at time ${seporateTime[0] + " " + seporateTime[1].substring(0, 9)}</p>`
+                } else {
+                    const seporateTime = response.timePreformed.split("T");
+                    document.getElementById('transaction-form').innerHTML = `
+                    <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} to ${response.accounts[1]} with ${response.amount} at time ${seporateTime[0] + " " + seporateTime[1].substring(0, 9)}</p>`
+                }
             } else {
-                const seporateTime = response.timePreformed.split("T");
-                document.getElementById('transaction-form').innerHTML = `
-                <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} with ${response.amount} at time ${seporateTime[0] + " " + seporateTime[1].substring(0, 9)}</p>`
+                if(response.accounts[0].includes("Error")) {
+                    const seporateTime = response.timePreformed.split("T");
+                    document.getElementById('transaction-form').innerHTML = `
+                    <p>${response.accounts[0]} at time ${seporateTime[0] + " " + seporateTime[1].substring(0, 9)}</p>`
+                } else {
+                    const seporateTime = response.timePreformed.split("T");
+                    document.getElementById('transaction-form').innerHTML = `
+                    <p>Succsessfully completed a ${response.actionPreformed} on account ${response.accounts[0]} with ${response.amount} at time ${seporateTime[0] + " " + seporateTime[1].substring(0, 9)}</p>`
+                }
             }
             response.accounts.forEach( async (updatedAccount) => {
                 const account = await fetch(`http://localhost:8080/web/bank/account/getAccount=${updatedAccount}`, {
