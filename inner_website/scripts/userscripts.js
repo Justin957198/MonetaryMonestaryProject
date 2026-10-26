@@ -1,5 +1,6 @@
 window.addEventListener("DOMContentLoaded", loadUser);
-const editInfoBtn = document.getElementById('edit-info')
+const editInfoBtn = document.getElementById('edit-info');
+let formOpen = false;
 
 
 
@@ -58,6 +59,7 @@ async function refresh() {
 }
 
 function editForm() {
+    if(!formOpen) {
     document.getElementById('form-output').innerHTML = `
     <Label>Select The information you wish to edit</label>
     <select id="option">
@@ -69,6 +71,11 @@ function editForm() {
     <label>New information:</label>
     <input id="replace-text" type="text">
     <button id="submit-change" onClick="updateUserInfo()">Submit</button>`
+    formOpen = true;
+    } else {
+        document.getElementById('form-output').innerHTML = ``
+        formOpen = false;
+    }
 }
 
 async function updateUserInfo() {

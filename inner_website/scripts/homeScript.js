@@ -400,13 +400,49 @@ async function fetchTransactions() {
 }
 
 async function accountChoice() {
+    const accNumArray = [...accNumList];
     document.getElementById('transaction-block').innerHTML = `
     <label id="text">Select Account</label>
-    <option id=accounts>p</option>`
+    <select id="accList"></select>
+    <button onclick="oneAccountTransactions()">Request</button>`
+    for(let i = 0; i < accNumArray.length; i++) {
+        document.getElementById('accList').innerHTML += `
+        <option value=${accNumArray[i]}>${accNumArray[i]}</option>`
+    }
 }
 
 async function oneAccountTransactions() {
+    if(accNumList === null || accNumList.length === 0) {
 
+    } else {
+        try {
+            const data = await fetch(`http://localhost:8080/web/bank/transactions/account=${document.getElementById('accList').value}`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "content-type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+                },
+            })
+
+            if(data.status === 401) {
+                await refresh()
+                return oneAccountTransactions()
+            }
+
+            const transactions = await data.json();
+            console.log(transactions);
+            transactions.forEach((transaction) => {
+                document.getElementById('transaction-block').innerHTML += `
+                <h3>Type: ${transaction.type} | Ammount: ${transaction.transactionAmount} $ | Date: ${transaction.date}</h3>`
+            })
+            document.getElementById('transaction-block').innerHTML += `
+            <button id="retract-transactions" onclick="dispose(5)">Dispose</button>`
+            trabsactionsLoaded = true;
+        } catch (ex) {
+            console.log(ex);
+        }
+    }
 }
 
 function dispose(option) {
@@ -414,7 +450,7 @@ function dispose(option) {
         document.getElementById('transaction-form').innerHTML = ``
     } else if(option === 5) {
         trabsactionsLoaded = false;
-        document.getElementById('transaction-section').innerHTML = `<button id="transaction-fetch" onclick="fetchTransactions()">All Transactions</button><button>Account Transactions</button>
+        document.getElementById('transaction-section').innerHTML = `<button id="transaction-fetch" onclick="fetchTransactions()">All Transactions</button><button onclick="accountChoice()">Account Transactions</button>
             <div id="transaction-block">
 
             </div>`
