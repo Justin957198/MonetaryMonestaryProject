@@ -37,7 +37,7 @@ async function loadUser() {
             Object.entries(frontUser.usersAccounts).forEach(([accountNumber, account]) => {
                 let statusClass = "";
                 let minimumClass = "";
-            if(account.status === "Unlocked") {
+            if(account.status === "UNLOCKED") {
                 statusClass = "status-unlocked"
             } else {
                 statusClass = "status-locked"
@@ -112,7 +112,7 @@ async function refresh() {
 async function openAccountForm() {
     document.getElementById('account-form')
     .innerHTML = `<label>Select account type</label><br>
-    <label>Cheackings</label>
+    <label>Checkings</label>
     <input type="radio" id="type_checkings" name="account_type" value="Checking">
     <label>Savings</label>
     <input type="radio" id="type_savings" name="account_type" value="Savings"><br>
@@ -176,7 +176,7 @@ async function submitAccount() {
         const result = await response.json();
         document.getElementById('ErrorOrComfirmation')
         .textContent = result.message;
-        await refresh()
+        window.location.reload();
     } catch(ex) {
         console.log(ex.message);
     }
@@ -187,54 +187,69 @@ async function closeAccount() {
 }
 
 async function openDepositForm() {
-    const accNumArray = [...accNumList];
-    document.getElementById('transaction-form').innerHTML = `
-    <label id="action-type">Deposit</label><br>
-    <label>Enter account number:</label>
-    <select id="account-select"></select><br>
-    <label>Enter cash injection:</label>
-    <input id="injection" type="number" value=0><br>
-    <button onClick="manipCurrency()">Submit</button>
-    <button onclick="dispose(1)">Dispose</button>` 
-    for(let i = 0; i < accNumArray.length; i++) {
-        document.getElementById('account-select').innerHTML += `
-        <option>${accNumArray[i]}</option>`
+    if(accNumList.size === 0) {
+        document.getElementById('transaction-form').innerHTML = `
+        <p>No accounts avaliable.</p>`
+    } else {
+        const accNumArray = [...accNumList];
+        document.getElementById('transaction-form').innerHTML = `
+        <label id="action-type">Deposit</label><br>
+        <label>Enter account number:</label>
+        <select id="account-select"></select><br>
+        <label>Enter cash injection:</label>
+        <input id="injection" type="number" value=0><br>
+        <button onClick="manipCurrency()">Submit</button>
+        <button onclick="dispose(1)">Dispose</button>` 
+        for(let i = 0; i < accNumArray.length; i++) {
+            document.getElementById('account-select').innerHTML += `
+            <option>${accNumArray[i]}</option>`
+        }
     }
 }
 
 async function openWithdrawForm() {
-    const accNumArray = [...accNumList];
-    document.getElementById('transaction-form').innerHTML = `
-    <label id="action-type">Withdraw</label><br>
-    <label>Enter account number:</label>
-    <select id="account-select"></select><br>
-    <label>Enter cash request:</label>
-    <input id="injection" type="number" value=0><br>
-    <button onClick="manipCurrency()">Submit</button>
-    <button onclick="dispose(1)">Dispose</button>` 
-    for(let i = 0; i < accNumArray.length; i++) {
-        document.getElementById('account-select').innerHTML += `
-        <option>${accNumArray[i]}</option>`
+    if(accNumList.size === 0) {
+        document.getElementById('transaction-form').innerHTML = `
+        <p>No accounts avaliable.</p>`
+    } else {
+        const accNumArray = [...accNumList];
+        document.getElementById('transaction-form').innerHTML = `
+        <label id="action-type">Withdraw</label><br>
+        <label>Enter account number:</label>
+        <select id="account-select"></select><br>
+        <label>Enter cash request:</label>
+        <input id="injection" type="number" value=0><br>
+        <button onClick="manipCurrency()">Submit</button>
+        <button onclick="dispose(1)">Dispose</button>` 
+        for(let i = 0; i < accNumArray.length; i++) {
+            document.getElementById('account-select').innerHTML += `
+            <option>${accNumArray[i]}</option>`
+        }
     }
 }
 
 async function openTransferForm() {
-    const accNumArray = [...accNumList];
-    document.getElementById('transaction-form').innerHTML = `
-    <label id="action-type">Transfer</label><br>
-    <label>Enter origin account number:</label>
-    <select id="account-select"></select><br>
-    <label>Enter origin account number:</label>
-    <select id="account-select2"></select><br>
-    <label>Enter cash Transfer:</label>
-    <input id="injection" type="number" value=0><br>
-    <button onClick="manipCurrency()">Submit</button>
-    <button onclick="dispose(1)">Dispose</button>` 
-    for(let i = 0; i < accNumArray.length; i++) {
-        document.getElementById('account-select').innerHTML += `
-        <option>${accNumArray[i]}</option>`
-        document.getElementById('account-select2').innerHTML += `
-        <option>${accNumArray[i]}</option>`
+    if(accNumList.size === 0) {
+        document.getElementById('transaction-form').innerHTML = `
+        <p>No accounts avaliable.</p>`
+    } else {
+        const accNumArray = [...accNumList];
+        document.getElementById('transaction-form').innerHTML = `
+        <label id="action-type">Transfer</label><br>
+        <label>Enter origin account number:</label>
+        <select id="account-select"></select><br>
+        <label>Enter origin account number:</label>
+        <select id="account-select2"></select><br>
+        <label>Enter cash Transfer:</label>
+        <input id="injection" type="number" value=0><br>
+        <button onClick="manipCurrency()">Submit</button>
+        <button onclick="dispose(1)">Dispose</button>` 
+        for(let i = 0; i < accNumArray.length; i++) {
+            document.getElementById('account-select').innerHTML += `
+            <option>${accNumArray[i]}</option>`
+            document.getElementById('account-select2').innerHTML += `
+            <option>${accNumArray[i]}</option>`
+        }
     }
 }
 
@@ -311,7 +326,7 @@ async function manipCurrency() {
                 const acc = await account.json();
                 let statusClass = "";
                 let minimumClass = "";
-                if(acc.status === "Unlocked") {
+                if(acc.status === "UNLOCKED") {
                     statusClass = "status-unlocked";
                 } else {
                     statusClass = "status-locked";
